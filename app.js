@@ -206,7 +206,233 @@ function handleEcho(messageId, appId, metadata) {
 
 function handleDialogFlowAction(sender, action, messages, contexts, parameters) {
 
+    function getBreweryData(prop) {
+        let ent = ''
+        if (prop == 'city') {
+            ent = 'geo-city'
+        } else if (prop == 'name') {
+            ent = 'any'
+        }
+        if ( parameters.fields.hasOwnProperty(ent) && parameters.fields[ent].stringValue!='' ) {
+    
+            // handle inputs with multiple words
+            let brew = (parameters.fields[ent].stringValue).replace(/[, ]+/g, " ").trim().split(" ")
+            console.log(brew)
+            let brewery = ""
+            if (brew.length > 1) { 
+                for (var i = 0; i <= brew.length - 1; i++) {
+                    if (i == brew.length - 1) {
+                        brewery += brew[i]
+                    } else {
+                        brewery += brew[i]
+                        brewery += "_"
+                    }                    
+                } 
+            } else {
+                brewery = brew[0]
+            }
+    
+            console.log(prop)
+            console.log(ent)
+            console.log(brewery)
+    
+            // Places API key
+            const key = "AIzaSyBzRPO1aFfHK14R7PFF__v_XTghJb_TQOI";
+            var elements = [];
+    
+            const getData = async() => {
+                try {
+                    const apiCall1 = await axios.get(`https://api.openbrewerydb.org/breweries?by_${prop}=${brewery}`);
+                    var arr = []
+                    var nameArr = []
+                    var cityArr = []
+                    var streetArr = []
+                    var stateArr = []
+                    var urlArr = []
+                    for (var i = 0; i <= apiCall1.data.length - 1; i++) {
+                        const api = await axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${apiCall1.data[i].name}%20${apiCall1.data[i].city}&inputtype=textquery&fields=photos&key=${key}`)
+                        arr.push(api.data)
+                    }
+    
+                    for (var i = 0; i <= apiCall1.data.length - 1; i++) {
+                        nameArr.push(apiCall1.data[i].name)
+                        streetArr.push(apiCall1.data[i].street)
+                        cityArr.push(apiCall1.data[i].city)
+                        stateArr.push(apiCall1.data[i].state)
+                        urlArr.push(apiCall1.data[i].website_url)
+                    }
+                    
+                    for (var j = 0; j <= arr.length - 1; j++) {
+    
+                        let url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${arr[j].candidates[0].photos[0].photo_reference}&key=${key}`
+                        
+                        if (nameArr[j] != '' && streetArr[j] != '' && cityArr[j] != '' && stateArr[j] != '' && urlArr[j] != '') {    
+                            let element = {
+                                "title": `${nameArr[j]}`,
+                                "image_url":`${url}`,
+                                "subtitle":`${streetArr[j]} ${cityArr[j]}, ${stateArr[j]}`,
+                                "default_action": {
+                                "type": "web_url",
+                                "url": `${urlArr[j]}`,
+                                "webview_height_ratio": "tall",
+                                },
+                                "buttons":[
+                                    {
+                                        "type":"web_url",
+                                        "url":`${urlArr[j]}`,
+                                        "title":"View Website"
+                                    },{
+                                        "type":"web_url",
+                                        "url": `https://www.google.com/maps/search/?api=1&query=${nameArr[j]} ${cityArr[j]}`,
+                                        "title":"Get Directions",
+                                    }              
+                                ]      
+                            }
+                            
+                        console.log("pushed")
+                        console.log(j)
+                        console.log(element)
+                        elements.push(element)
+                        } else {
+                            console.log("returned")
+                        }
+                    }
+                } catch(e) {
+                    console.log(e)
+                    sendTextMessage(sender, `Sorry, I don't have any available data for ${parameters.fields[ent].stringValue}`)
+                }
+                sendGenericMessage(sender, elements);
+            }
+    
+            getData() 
+            
+            
+        } else {
+            handleMessages(messages, sender);
+        }
+    }
+    
+    function getBeerData() {
+        if ( parameters.fields.hasOwnProperty('any') && parameters.fields['any'].stringValue!='' ) {
+            let input = parameters.fields['any'].stringValue
+            let beer = input.split(" ")
+            let beerQuery = ""
+    
+            if (beer.length > 1) { 
+                for (var i = 0; i <= beer.length - 1; i++) {
+                    if (i == beer.length - 1) {
+                        beerQuery += beer[i]
+                    } else {
+                        beerQuery += beer[i]
+                        beerQuery += "+"
+                    }                    
+                } 
+            } else {
+                beerQuery = beer[0]
+            }
+    
+            var elements = [];
+    
+            console.log(beerQuery)
+    
+            const scrapeBeer = async() => {
+                try {
+    
+                    const html1 = await axios.get(`https://www.beeradvocate.com/search/?q=${beerQuery}`);
+                    const $ = await cheerio.load(html1.data);
+                    let data = [];
+    
+                    $('div[id="ba-content"]').find('div > div > a:nth-child(2)').each((i, elem) => {
+                            data.push({
+                                beer: $(elem).text(),
+                                link: $(elem).attr('href')
+                                })
+                            });
+    
+                    console.log(`profileURL: https://www.beeradvocate.com${data[0].link}`)
+                    
+                    const html2 = await axios.get(`https://www.beeradvocate.com${data[0].link}`)
+                    const $$ = await cheerio.load(html2.data);
+                    let getAbv = [], getBeerType = [], getBrewery = [], getImg = []
+    
+                    $$('#info_box').find('#info_box > div:nth-child(3) > dl > dd > span > b').each((i, elem) => {
+                        getAbv.push({
+                            abv: $$(elem).text(),
+                        })
+                    });
+    
+                    $$('#info_box').find('#info_box > div:nth-child(3) > dl > dd:nth-child(2) > a:nth-child(1) > b').each((i, elem) => {
+                    getBeerType.push({
+                        type: $$(elem).text(),
+                        })
+                    });
+    
+                    $$('#info_box').find('#info_box > div:nth-child(3) > dl > dd:nth-child(14) > a').each((i, elem) => {
+                        getBrewery.push({
+                            brewery: $$(elem).text(),
+                            })
+                        });
+    
+                    // $$('#info_box').find('#info_box > div:nth-child(3) > dl > dd:nth-child(16)').each((i, elem) => {
+                    //     getLocation.push({
+                    //         location: $$(elem).text(),
+                    //         })
+                    //     });
+    
+                    $$('#main_pic_norm').find('#main_pic_norm > div > img').each((i, elem) => {
+                        getImg.push({
+                            image: $$(elem).attr('src'),
+                            })
+                        });
+    
+                    // console.log(data[0].beer, getAbv[0], getBeerType[0], getBrewery[0], getLocation[0], getImg[0])
+    
+                    let element = {
+                        "title": `${data[0].beer}`,
+                        "image_url":`${getImg[0].image}`,
+                        "subtitle":`${getBeerType[0].type} // ${getAbv[0].abv} ABV // ${getBrewery[0].brewery}`,
+                        "default_action": {
+                        "type": "web_url",
+                        "url": `https://www.beeradvocate.com${data[0].link}`,
+                        "webview_height_ratio": "tall",
+                        },
+                        "buttons":[
+                            {
+                                "type":"web_url",
+                                "url":`https://www.beeradvocate.com${data[0].link}`,
+                                "title":"Full Profile"
+                            }            
+                        ]      
+                    }
+    
+                    console.log(element)
+                    elements.push(element);
+                } catch(e) {
+    
+                    sendTextMessage(sender, `Sorry, I don't have any available data for ${parameters.fields['any'].stringValue}`)
+                    return e
+                }
+                
+                sendGenericMessage(sender, elements);
+            }
+    
+            scrapeBeer()
+        } else {
+            handleMessages(messages, sender);
+        }
+    }
+    
     switch (action) {
+        // get brewery by name intent
+        case "get-name":
+            getBreweryData('name');
+            break;
+        case "get-city":
+            getBreweryData('city')
+            break;
+        case "get-beer":
+            getBeerData()
+            break;
         default:
             //unhandled action, just send back the text
             handleMessages(messages, sender);
