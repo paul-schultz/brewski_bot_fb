@@ -946,7 +946,7 @@ function receivedPostback(event) {
     switch (payload) {
         default:
             case 'GET_STARTED':
-            sendToDialogFlow(senderID, 'Deefault Welcome Intent');
+            sendToDialogFlow(senderID, 'Default Welcome Intent');
             break;
             case 'MENU':
             sendToDialogFlow(senderID, 'Menu');
