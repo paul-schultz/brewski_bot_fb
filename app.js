@@ -952,9 +952,27 @@ function receivedPostback(event) {
         "Or click the Menu button to the right ➡️"
     ]
 
+    function delay(time) {
+        return new Promise(function(resolve, reject) {
+          setTimeout(resolve, time);
+        });
+      }
+
+    function sendGreeting() {
+        delay(2000).then(() => {
+            sendTextMessage(senderID, greeting[0])
+            delay(2000).then(() => {
+                sendTextMessage(senderID, greeting[1])
+                delay(2000).then(() => {
+                    sendTextMessage(senderID, greeting[2])
+                })
+            })
+        })
+    }
+
     switch (payload) {
             case 'GET_STARTED':
-                handleMessages(greeting, senderID)
+                sendGreeting();
                 break;
             case 'MENU':
                 sendToDialogFlow(senderID, 'Menu');
