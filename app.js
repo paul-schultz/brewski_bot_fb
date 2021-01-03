@@ -925,7 +925,35 @@ function callSendAPI(messageData) {
     });
 }
 
+function greetUserText(userId) {
+	//first read user firstname
+	request({
+		uri: 'https://graph.facebook.com/v3.2/' + userId,
+		qs: {
+			access_token: config.FB_PAGE_TOKEN
+		}
 
+	}, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+
+			var user = JSON.parse(body);
+			console.log('getUserData: ' + user);
+			if (user.first_name) {
+				console.log("FB user: %s %s, %s",
+					user.first_name, user.last_name, user.profile_pic);
+
+				sendTextMessage(userId, "Hi there, " + user.first_name + "! I'm brewski_bot, the virtual drinking buddy! 🤖",);
+			} else {
+				console.log("Cannot get data for fb user with id",
+                    userId);
+                sendTextMessage(userId, "Hi there! I'm brewski_bot, the virtual drinking buddy! 🤖",);
+			}
+		} else {
+			console.error(response.error);
+		}
+
+	});
+}
 
 /*
  * Postback Event
@@ -944,7 +972,6 @@ function receivedPostback(event) {
     var payload = event.postback.payload;
 
     const greeting = [
-        "Hi there! I'm brewski_bot, the virtual drinking buddy! 🤖",
         "I can search for breweries by name or by city 🌎",
         "Fetch profiles for individual beers 🍺",
         "And help you find a ride home 🚕",
@@ -960,17 +987,17 @@ function receivedPostback(event) {
 
     function sendGreeting() {
         delay(2000).then(() => {
-            sendTextMessage(senderID, greeting[0])
+            greetUserText(senderID);
             delay(2000).then(() => {
-                sendTextMessage(senderID, greeting[1])
+                sendTextMessage(senderID, greeting[0])
                 delay(2000).then(() => {
-                    sendTextMessage(senderID, greeting[2])
+                    sendTextMessage(senderID, greeting[1])
                     delay(2000).then(() => {
-                        sendTextMessage(senderID, greeting[3])
+                        sendTextMessage(senderID, greeting[2])
                         delay(2000).then(() => {
-                            sendTextMessage(senderID, greeting[4])
+                            sendTextMessage(senderID, greeting[3])
                             delay(2000).then(() => {
-                                sendTextMessage(senderID, greeting[5])
+                                sendTextMessage(senderID, greeting[4])
                             })
                         })
                     })
