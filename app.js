@@ -953,8 +953,10 @@ function receivedPostback(event) {
     ]
 
     function sendGreeting() {
-        for (var i = 0; i <= greeting.length - 1; i++) {
-            sendTextMessage(senderID, greeting[i]);
+        for (let i = 0; i <= greeting.length - 1; i++) {
+            setTimeout(() => {
+                sendTextMessage(senderID, greeting[i]);
+              }, 1000);
         }
     }
 
