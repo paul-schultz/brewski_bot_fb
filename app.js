@@ -946,14 +946,15 @@ function receivedPostback(event) {
     switch (payload) {
         default:
             case 'GET_STARTED':
-            sendToDialogFlow(senderID, 'Default Welcome Intent');
-            break;
+                sendToDialogFlow(senderID, 'Default Welcome Intent');
+                break;
             case 'MENU':
-            sendToDialogFlow(senderID, 'Menu');
-            break;
-            //unindentified payload
-            sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
-            break;
+                sendToDialogFlow(senderID, 'Menu');
+                break;
+            default:
+                //unindentified payload
+                sendTextMessage(senderID, "I'm not sure what you want. Can you be more specific?");
+                break;
 
     }
 
