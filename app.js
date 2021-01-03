@@ -965,6 +965,15 @@ function receivedPostback(event) {
                 sendTextMessage(senderID, greeting[1])
                 delay(2000).then(() => {
                     sendTextMessage(senderID, greeting[2])
+                    delay(2000).then(() => {
+                        sendTextMessage(senderID, greeting[3])
+                        delay(2000).then(() => {
+                            sendTextMessage(senderID, greeting[4])
+                            delay(2000).then(() => {
+                                sendTextMessage(senderID, greeting[5])
+                            })
+                        })
+                    })
                 })
             })
         })
