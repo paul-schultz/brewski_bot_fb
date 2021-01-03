@@ -944,7 +944,6 @@ function receivedPostback(event) {
     var payload = event.postback.payload;
 
     switch (payload) {
-        default:
             case 'GET_STARTED':
                 sendToDialogFlow(senderID, 'Default Welcome Intent');
                 break;
