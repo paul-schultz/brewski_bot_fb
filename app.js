@@ -945,7 +945,12 @@ function receivedPostback(event) {
 
     switch (payload) {
             case 'GET_STARTED':
-                sendTextMessage(senderID, "Hello");
+                sendTextMessage(senderID, "Hi there! I'm brewski_bot, the virtual drinking buddy! 🤖");
+                sendTextMessage(senderID, "I can search for breweries by name or by city 🌎");
+                sendTextMessage(senderID, "Fetch profiles for individual beers 🍺");
+                sendTextMessage(senderID, "And help you find a ride home 🚕");
+                sendTextMessage(senderID, "Say \"Menu\" at any time to perform a new search 🔍");
+                sendTextMessage(senderID, "Or click the Menu button to the right ➡️");
                 break;
             case 'MENU':
                 sendToDialogFlow(senderID, 'Menu');
