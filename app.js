@@ -945,7 +945,7 @@ function receivedPostback(event) {
 
     switch (payload) {
             case 'GET_STARTED':
-                sendToDialogFlow(senderID, 'Hello');
+                sendToDialogFlow(senderID, "Hello");
                 break;
             case 'MENU':
                 sendToDialogFlow(senderID, 'Menu');
