@@ -956,7 +956,7 @@ function receivedPostback(event) {
         for (let i = 0; i <= greeting.length - 1; i++) {
             setTimeout(() => {
                 sendTextMessage(senderID, greeting[i]);
-              }, 1000);
+              }, 3000);
         }
     }
 
