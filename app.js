@@ -943,14 +943,24 @@ function receivedPostback(event) {
     // button for Structured Messages.
     var payload = event.postback.payload;
 
+    const greeting = [
+        "Hi there! I'm brewski_bot, the virtual drinking buddy! 🤖",
+        "I can search for breweries by name or by city 🌎",
+        "Fetch profiles for individual beers 🍺",
+        "And help you find a ride home 🚕",
+        "Say \"Menu\" at any time to perform a new search 🔍",
+        "Or click the Menu button to the right ➡️"
+    ]
+
+    function sendGreeting() {
+        for (var i = 0; i <= greeting.length - 1; i++) {
+            sendTextMessage(senderID, greeting[i]);
+        }
+    }
+
     switch (payload) {
             case 'GET_STARTED':
-                sendTextMessage(senderID, "Hi there! I'm brewski_bot, the virtual drinking buddy! 🤖");
-                sendTextMessage(senderID, "I can search for breweries by name or by city 🌎");
-                sendTextMessage(senderID, "Fetch profiles for individual beers 🍺");
-                sendTextMessage(senderID, "And help you find a ride home 🚕");
-                sendTextMessage(senderID, "Say \"Menu\" at any time to perform a new search 🔍");
-                sendTextMessage(senderID, "Or click the Menu button to the right ➡️");
+                sendGreeting();
                 break;
             case 'MENU':
                 sendToDialogFlow(senderID, 'Menu');
