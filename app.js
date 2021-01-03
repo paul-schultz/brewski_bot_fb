@@ -952,17 +952,9 @@ function receivedPostback(event) {
         "Or click the Menu button to the right ➡️"
     ]
 
-    function sendGreeting() {
-        for (let i = 0; i <= greeting.length - 1; i++) {
-            setTimeout(() => {
-                sendTextMessage(senderID, greeting[i]);
-              }, 3000);
-        }
-    }
-
     switch (payload) {
             case 'GET_STARTED':
-                sendGreeting();
+                handleMessages(greeting, senderID)
                 break;
             case 'MENU':
                 sendToDialogFlow(senderID, 'Menu');
