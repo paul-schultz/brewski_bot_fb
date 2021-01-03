@@ -936,12 +936,7 @@ function greetUserText(userId) {
 		uri: 'https://graph.facebook.com/v3.2/' + userId,
 		qs: {
 			access_token: config.FB_PAGE_TOKEN
-        },
-        ssl: {
-            sslmode: 'require',
-            rejectUnauthorized: false,
         }
-
 	}, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 
