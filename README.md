@@ -1,8 +1,8 @@
 # brewski_bot_fb
-| ⚠ **Important**: Facebook has postponed their App Review process for individuals due to COVID-19. |
+| ⚠ Facebook has postponed their App Review process for individuals due to COVID-19. |
 | --- |
 
-| ⚠ Therefore brewski_bot cannot be published and will be stuck in the production stage indefinitely. |
+| ⚠ Unfortunately brewski_bot cannot be published and will be stuck in the production stage indefinitely. |
 | --- |
 
 | ⚠ In the meantime I will be working on building a new self-hosted version with React and posting a link to a detailed video demo of the Facebook bot on here. |
