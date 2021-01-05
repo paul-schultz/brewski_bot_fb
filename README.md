@@ -5,7 +5,7 @@
 | ⚠ Unfortunately brewski_bot cannot be published as a result and will be stuck in the production stage indefinitely. |
 | --- |
 
-| ⚠ I will be working on building a new self-hosted version of the bot using React. In the meantime you can visit <a href="https://streamable.com/jhqu7o" target="_blank">this link</a> for an in-depth demo of the Facebook bot in its current stage. |
+| ⚠ I will be working on building a new self-hosted version of the bot using React. In the meantime you can visit [this link](https://streamable.com/jhqu7o) for an in-depth demo of the Facebook bot in its current stage. |
 | --- |
 
 brewski_bot is an online assistant for beer drinkers. A virtual drinking buddy. brewskit_bot communicates through FB Messenger with Dialogflow and Node.js, using Heroku as a webhook.
